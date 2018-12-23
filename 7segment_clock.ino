@@ -26,6 +26,9 @@ const int PinDataIn = 13;
 const int PinClk = 14;
 const int PinLoad = 2;
 const int PinButton = 0;
+
+int displayMode = 0;
+  
 LedControl lc=LedControl(PinDataIn, PinClk, PinLoad, 1);
 
 void setup()
@@ -51,6 +54,8 @@ void setup()
 
   timeClient.begin();
   dht.begin();
+
+
   
   // Initialize the 3 MAX7219 devices
   for(int k=0; k<3; k++){
@@ -63,13 +68,23 @@ void loop()
 {
   if(digitalRead(PinButton) == LOW)
   {
-    modeDisplayTemp();
+    displayMode++;
+    if(displayMode > 1)
+    {
+      displayMode = 0;
+    }
+    delay(100);
   }
-  else
-  {
+
+switch (displayMode) {
+  case 0:
     modeDisplayTime();
-  }
+    break;
+  case 1:
+    modeDisplayTemp();
+    break;
   
+}  
   delay(100);
   //lc.clearDisplay(0);
 }
