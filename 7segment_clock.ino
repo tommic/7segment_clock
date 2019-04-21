@@ -15,7 +15,8 @@ WiFiUDP ntpUDP;
 // You can specify the time server pool and the offset (in seconds, can be
 // changed later with setTimeOffset() ). Additionaly you can specify the
 // update interval (in milliseconds, can be changed using setUpdateInterval() ).
-NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
+// NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000); // Winterzeit 
+NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 7200, 60000);
 
 /*
 DataIn = D7
@@ -26,9 +27,6 @@ const int PinDataIn = 13;
 const int PinClk = 14;
 const int PinLoad = 2;
 const int PinButton = 0;
-
-int displayMode = 0;
-  
 LedControl lc=LedControl(PinDataIn, PinClk, PinLoad, 1);
 
 void setup()
@@ -54,8 +52,6 @@ void setup()
 
   timeClient.begin();
   dht.begin();
-
-
   
   // Initialize the 3 MAX7219 devices
   for(int k=0; k<3; k++){
@@ -68,26 +64,13 @@ void loop()
 {
   if(digitalRead(PinButton) == LOW)
   {
-    displayMode++;
-    if(displayMode > 2)
-    {
-      displayMode = 0;
-    }
-    delay(100);
-  }
-
-switch (displayMode) {
-  case 0:
-    modeDisplayTime();
-    break;
-  case 1:
     modeDisplayTemp();
-    break;
-  case 2:
-    displayIp();
-    break;
+  }
+  else
+  {
+    modeDisplayTime();
+  }
   
-}  
   delay(100);
   //lc.clearDisplay(0);
 }
@@ -159,15 +142,4 @@ void displayTemp(float t, float h)
      lc.setDigit(0,1,h2, true);  // Decimal point enabled
      lc.setDigit(0,0,h3, false);  // Decimal point enabled
   
-}
-
-void displayIp()
-{ 
-  char ip = ' '; 
-  ip =  WiFi.localIP();
-  lc.clearDisplay(0);
-  for (int i = 0; i < 8 && ip[i] != 0; i++) {
-    // display.setChar(0, 7 - i, ip[i], false);
-  }
-  delay(1000);
 }
