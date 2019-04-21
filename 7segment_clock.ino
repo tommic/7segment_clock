@@ -69,7 +69,7 @@ void loop()
   if(digitalRead(PinButton) == LOW)
   {
     displayMode++;
-    if(displayMode > 1)
+    if(displayMode > 2)
     {
       displayMode = 0;
     }
@@ -82,6 +82,9 @@ switch (displayMode) {
     break;
   case 1:
     modeDisplayTemp();
+    break;
+  case 2:
+    displayIp();
     break;
   
 }  
@@ -156,4 +159,15 @@ void displayTemp(float t, float h)
      lc.setDigit(0,1,h2, true);  // Decimal point enabled
      lc.setDigit(0,0,h3, false);  // Decimal point enabled
   
+}
+
+void displayIp()
+{ 
+  char ip = ' '; 
+  ip =  WiFi.localIP();
+  lc.clearDisplay(0);
+  for (int i = 0; i < 8 && ip[i] != 0; i++) {
+    // display.setChar(0, 7 - i, ip[i], false);
+  }
+  delay(1000);
 }
